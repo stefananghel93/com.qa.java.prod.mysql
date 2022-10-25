@@ -32,7 +32,7 @@ public class ProductController {
 	
 	ResponseEntity<?> responseEntity;
 
-	@GetMapping("/product")
+	@GetMapping("/products")
 	public ResponseEntity<?> getAllProducts() {
 
 		try {
@@ -48,7 +48,7 @@ public class ProductController {
 		return responseEntity;
 	}
 
-	@GetMapping("/product{id}")
+	@GetMapping("/products/{id}")
 	public ResponseEntity<?> getProductById(@RequestParam("id") int id) throws ProductNotFoundException {
 		try {
 
@@ -64,7 +64,7 @@ public class ProductController {
 
 	}
 
-	@PostMapping("/add-product")
+	@PostMapping("/products")
 	public ResponseEntity<?> addProduct(@Valid @RequestBody Product product) throws ProductAlreadyExistsException {
 		try {
 			Product addedProduct = this.prodService.addProduct(product);
@@ -81,8 +81,8 @@ public class ProductController {
 		return responseEntity;
 	}
 
-	@PutMapping("/product")
-	public ResponseEntity<?> updateProduct(@RequestBody Product product) throws ProductNotFoundException {
+	@PutMapping("/products")
+	public ResponseEntity<?> updateProduct(@Valid @RequestBody Product product) throws ProductNotFoundException {
 		try {
 			Product updatedProduct = this.prodService.updateProduct(product);
 			responseEntity = new ResponseEntity<>(updatedProduct, HttpStatus.OK);
@@ -96,7 +96,7 @@ public class ProductController {
 		return responseEntity;
 	}
 
-	@DeleteMapping("/product/{id}")
+	@DeleteMapping("/products/{id}")
 	public ResponseEntity<?> deleteProduct(@PathVariable("id") int id) throws ProductNotFoundException {
 		try {
 			boolean status = this.prodService.deleteProduct(id);
@@ -113,6 +113,77 @@ public class ProductController {
 		}
 		return responseEntity;
 	}
+	
+	
+	  @GetMapping("/products/total_price")
+	  public ResponseEntity<?> findTotalPriceOfAllProducts(){
+		
+			  try {
+				  
+				  double totalPriceValue = this.prodService.findTotalPriceOfAllProducts();
+				  responseEntity = new ResponseEntity<>(totalPriceValue, HttpStatus.OK);
+			  } catch (Exception e) {
+				  
+				  responseEntity = new ResponseEntity<>("Some internal error has occured..", HttpStatus.INTERNAL_SERVER_ERROR);
+			  }
+			 
+		  return responseEntity;	 
+	  }
+	  
+	  
+	  @GetMapping("/products/name/{name}")
+	  public ResponseEntity<?> getProductByName(@PathVariable("name") String name){
+		
+			  try {
+				  
+				  List<Product> productListByNameAndPrice = this.prodService.getProductByName(name);
+				  responseEntity = new ResponseEntity<>(productListByNameAndPrice, HttpStatus.OK);
+			  } catch (Exception e) {
+				  
+				  responseEntity = new ResponseEntity<>("Some internal error has occured..", HttpStatus.INTERNAL_SERVER_ERROR);
+			  }
+			 
+		  return responseEntity;
+	 
+	  }
+	  
+	  @GetMapping("/products/name/{name}/price/{price}")
+	  public ResponseEntity<?> getProductByNameAndPrice(@PathVariable("name") String name, @PathVariable("price") double price){
+		
+			  try {
+				  
+				  List<Product> productListByNameAndPrice = this.prodService.findProductByNameAndPrice(name, price);
+				  responseEntity = new ResponseEntity<>(productListByNameAndPrice, HttpStatus.OK);
+			  } catch (Exception e) {
+				  
+				  responseEntity = new ResponseEntity<>("Some internal error has occured..", HttpStatus.INTERNAL_SERVER_ERROR);
+			  }
+			 
+		  return responseEntity;
+	  }
+	  
+	  
+	  @PutMapping("/products/update_details")
+	  public ResponseEntity<?> updateProductDetails(@Valid @RequestBody Product product) throws ProductNotFoundException{
+		  
+		  try {
+			  
+			  Product updatedProduct = this.prodService.updateProductDetails(product.getId(), product.getName(), product.getPrice());
+			  responseEntity = new ResponseEntity<>(updatedProduct, HttpStatus.OK);
+			  
+		  } catch (ProductNotFoundException e) {
+			  throw e;
+		  } catch (Exception e) {
+			  responseEntity = new ResponseEntity<>("Some internal error has occured.. Please try again!", HttpStatus.INTERNAL_SERVER_ERROR);
+			  e.printStackTrace();
+		  }
+		  
+		  return responseEntity;
+	  }
+	  
+	  
+	  
+	  
 	
 	@GetMapping("/product/prod_price_details")
 	public ResponseEntity<?> getAllProductPriceDetails(){

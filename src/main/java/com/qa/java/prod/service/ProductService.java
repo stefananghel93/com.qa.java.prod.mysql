@@ -15,10 +15,14 @@ public interface ProductService {
 	
 	List<Product> getAllProducts();
 	Product getProductById(int id) throws ProductNotFoundException;
+	public List<Product> getProductByName(String name);
 	Product addProduct(Product product) throws ProductAlreadyExistsException;
 	public Product updateProduct(Product product) throws ProductNotFoundException;
 	public boolean deleteProduct(int id) throws ProductNotFoundException;
-	Double findTotalPriceOfAllProducts();
+	public Double findTotalPriceOfAllProducts();
+	List<Product> findProductByNameAndPrice(String name,double price);
+	public Product updateProductDetails(int id, String name, double price) throws ProductNotFoundException;
+	
 	
 	public List<ProductDto> getProductPriceDetails();
 }
